@@ -33,6 +33,11 @@ namespace Testes_1
             {
                 client.BaseAddress = new Uri("http://localhost:45000");
             });
+            
+            builder.Services.AddHttpClient<ProjetoService>(client =>
+            {
+                client.BaseAddress = new Uri("http://localhost:45000");
+            });
 
             await builder.Build().RunAsync();
         }

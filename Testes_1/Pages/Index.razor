@@ -4,19 +4,23 @@
 @using Testes_1.Services.Controller
 
 @using System.Linq
+@using System.Collections
 @using System.Text.Encodings.Web
 
 @using CNProjetos.Client.Models
 @using System.Text.Json
 
 @inject ClienteService clienteService
+@inject ProjetoService projetoService
+
+@inject NavigationManager NavigationManager
 
 @inject HttpClient _http
 
 <h3>SearchBox</h3>
 
 
-@if (clienteLista == null)
+@if (listaCliente == null)
 {
     <p>
         <em>Carregando...</em>
@@ -24,8 +28,11 @@
 }
 else
 {   <input type="text" class="form-control" placeholder="Pesquisar..." @bind-value="pesquisar" @bind-value:event="oninput">
+    <button class="@bHidden" @onclick="voltarInicio">Voltar atras</button>
+
+    //---> Tabela de clientes, inicialmente mostrada para se ecolher o cliente, ao escolher é escondida
     
-    <table class="table table-striped">
+    <table class="table table-striped @cHidden">
         <thead>
         <tr>
             <th>NIPC</th>
@@ -33,28 +40,105 @@ else
         </tr>
         </thead>
         <tbody>
-        @foreach (var c in clienteLista.Where(c=> c.clienteNome.ToLower().Contains(pesquisar.ToLower())))
+        @foreach (var c in listaCliente.Where(c=> c.clienteNome.ToLower().Contains(pesquisar.ToLower())))
         {
-            <tr>
+            <tr @onclick="() => escolherCliente(c.clienteId)">
                 <td>@c.clienteNipc</td>
                 <td>@c.clienteNome</td>
             </tr>
         }
         </tbody>
     </table>
+    
+    //---> Tabela de projetos, inicialmente escondida, até se escolher o cliente e aparecerem os projetos filtrados
+    
+    <table class="table table-striped @pHidden">
+        <thead>
+        <tr>
+            <th>Medida</th>
+            <th>Nº Projeto</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var c in listaProjetofiltrada)
+        {
+            <tr @onclick="() => fichaProjeto(c.cliente_Id, c.medida_Id, c.projetoId)">
+                <td>@c.medida_Id</td>
+                <td>@c.projetoNumero</td>
+            </tr>
+        }
+        </tbody>
+    </table>
+    
+    <div>@teste</div>
+    
+    <div>Cliente ID: @ClienteId</div>
+    <div>Medida ID: @MedidaId</div>
+    <div>Projeto ID: @ProjetoId</div>
+    
 }
 
 
 @code
 {
-    public static IList<cliente> clienteLista = new List<cliente>();
+    public IList<cliente> listaCliente = new List<cliente>();
 
-    public static string pesquisar = "";
+    public IList<projeto> listaProjeto = new List<projeto>();
+
+    public IEnumerable<projeto> listaProjetofiltrada = new List<projeto>();
+    
+    public string pesquisar = "";
+
+    public string teste = "teste";
+
+    public static int? ClienteId;
+    public static int MedidaId;
+    public static int ProjetoId;
+
+    public string cHidden = ""; // mostrar tabela dos clientes
+    public string pHidden = "d-none";  // esconder tabela dos projetos
+    public string bHidden = "d-none";  // esconder botão "Voltar atrás!"
     
     protected override async Task OnInitializedAsync()
     {
-        clienteLista = await clienteService.Get();
+        listaCliente = await clienteService.Get();
+        listaProjeto = await projetoService.Get();
     }
-    
-    
+
+    public void escolherCliente(int id)
+    {
+        teste = id.ToString();
+        cHidden = "d-none";
+        pHidden = "";
+        bHidden = "";
+        
+        if (listaProjeto == null)
+        {
+            teste = "Este cliente não projetos associados.";
+        }
+        
+        else
+        {
+            listaProjetofiltrada = listaProjeto.Where(c => c.cliente_Id == id);
+        }
+    }
+
+    public void voltarInicio()
+    {
+        cHidden = "";
+        pHidden = "d-none";
+        bHidden = "d-none";
+        pesquisar = "";
+    }
+
+    public void fichaProjeto(int clienteId, int medidaId, int projetoId)
+    {
+        ClienteId = clienteId;
+        MedidaId = medidaId;
+        ProjetoId = projetoId;
+
+        NavigationManager.NavigateTo("FichaDoProjeto" + "/" + clienteId + "/" + medidaId + "/" + projetoId);
+        
+    }
+
 }

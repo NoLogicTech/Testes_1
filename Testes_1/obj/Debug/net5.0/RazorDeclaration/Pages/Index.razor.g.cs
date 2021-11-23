@@ -104,20 +104,27 @@ using System.Linq;
 #nullable disable
 #nullable restore
 #line 7 "C:\Users\mcorr\Desktop\Testes\Testes_1\Testes_1\Pages\Index.razor"
+using System.Collections;
+
+#line default
+#line hidden
+#nullable disable
+#nullable restore
+#line 8 "C:\Users\mcorr\Desktop\Testes\Testes_1\Testes_1\Pages\Index.razor"
 using System.Text.Encodings.Web;
 
 #line default
 #line hidden
 #nullable disable
 #nullable restore
-#line 9 "C:\Users\mcorr\Desktop\Testes\Testes_1\Testes_1\Pages\Index.razor"
+#line 10 "C:\Users\mcorr\Desktop\Testes\Testes_1\Testes_1\Pages\Index.razor"
 using CNProjetos.Client.Models;
 
 #line default
 #line hidden
 #nullable disable
 #nullable restore
-#line 10 "C:\Users\mcorr\Desktop\Testes\Testes_1\Testes_1\Pages\Index.razor"
+#line 11 "C:\Users\mcorr\Desktop\Testes\Testes_1\Testes_1\Pages\Index.razor"
 using System.Text.Json;
 
 #line default
@@ -132,23 +139,75 @@ using System.Text.Json;
         }
         #pragma warning restore 1998
 #nullable restore
-#line 49 "C:\Users\mcorr\Desktop\Testes\Testes_1\Testes_1\Pages\Index.razor"
+#line 83 "C:\Users\mcorr\Desktop\Testes\Testes_1\Testes_1\Pages\Index.razor"
  
-    public static IList<cliente> clienteLista = new List<cliente>();
+    public IList<cliente> listaCliente = new List<cliente>();
 
-    public static string pesquisar = "";
+    public IList<projeto> listaProjeto = new List<projeto>();
+
+    public IEnumerable<projeto> listaProjetofiltrada = new List<projeto>();
+    
+    public string pesquisar = "";
+
+    public string teste = "teste";
+
+    public static int? ClienteId;
+    public static int MedidaId;
+    public static int ProjetoId;
+
+    public string cHidden = ""; // mostrar tabela dos clientes
+    public string pHidden = "d-none";  // esconder tabela dos projetos
+    public string bHidden = "d-none";  // esconder botão "Voltar atrás!"
     
     protected override async Task OnInitializedAsync()
     {
-        clienteLista = await clienteService.Get();
+        listaCliente = await clienteService.Get();
+        listaProjeto = await projetoService.Get();
     }
-    
-    
+
+    public void escolherCliente(int id)
+    {
+        teste = id.ToString();
+        cHidden = "d-none";
+        pHidden = "";
+        bHidden = "";
+        
+        if (listaProjeto == null)
+        {
+            teste = "Este cliente não projetos associados.";
+        }
+        
+        else
+        {
+            listaProjetofiltrada = listaProjeto.Where(c => c.cliente_Id == id);
+        }
+    }
+
+    public void voltarInicio()
+    {
+        cHidden = "";
+        pHidden = "d-none";
+        bHidden = "d-none";
+        pesquisar = "";
+    }
+
+    public void fichaProjeto(int clienteId, int medidaId, int projetoId)
+    {
+        ClienteId = clienteId;
+        MedidaId = medidaId;
+        ProjetoId = projetoId;
+
+        NavigationManager.NavigateTo("FichaDoProjeto" + "/" + clienteId + "/" + medidaId + "/" + projetoId);
+        
+    }
+
 
 #line default
 #line hidden
 #nullable disable
         [global::Microsoft.AspNetCore.Components.InjectAttribute] private HttpClient _http { get; set; }
+        [global::Microsoft.AspNetCore.Components.InjectAttribute] private NavigationManager NavigationManager { get; set; }
+        [global::Microsoft.AspNetCore.Components.InjectAttribute] private ProjetoService projetoService { get; set; }
         [global::Microsoft.AspNetCore.Components.InjectAttribute] private ClienteService clienteService { get; set; }
     }
 }

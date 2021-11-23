@@ -1,0 +1,32 @@
+﻿@page "/FichaDoProjeto/{cliente}/{projeto}/{medida}"
+
+<div>Cliente: @cliente</div>
+<div>Medida: @projeto</div>
+<div>Projeto: @medida</div>
+
+@code
+{
+
+[Parameter]
+public string cliente{ get; set; }
+
+[Parameter]
+public string projeto{ get; set; }
+
+[Parameter]
+public string medida{ get; set; }
+    
+    public string testeC;
+    public string testeM;
+    public string testeP;
+
+    protected override void OnParametersSet()
+ {
+    //the param will be set now
+    var testeC = cliente;
+    var testeM = medida;
+    var testeP = projeto;
+ }
+    
+    
+}

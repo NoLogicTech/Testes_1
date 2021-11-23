@@ -21,9 +21,9 @@ namespace CNProjetos.Client.Models
         public DateTime? projetoDatainicio { get; set; }
         public DateTime? projetoDatafim { get; set; }
         public string projetoResponsavel { get; set; }
-        public int? cliente_Id { get; set; }
-        public int? medida_Id { get; set; }
-        public int? estado_Id { get; set; }
+        public int cliente_Id { get; set; }
+        public int medida_Id { get; set; }
+        public int estado_Id { get; set; }
 
         public virtual cliente cliente { get; set; }
         public virtual estadoprojeto estado { get; set; }

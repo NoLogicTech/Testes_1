@@ -629,3 +629,5 @@ C:\Users\mcorr\Desktop\Testes\Testes_1\Testes_1\obj\Debug\net5.0\build-gz\i0jzYS
 C:\Users\mcorr\Desktop\Testes\Testes_1\Testes_1\obj\Debug\net5.0\build-gz\ITQfi52G.gz
 C:\Users\mcorr\Desktop\Testes\Testes_1\Testes_1\obj\Debug\net5.0\RazorDeclaration\Pages\Tabela.razor.g.cs
 C:\Users\mcorr\Desktop\Testes\Testes_1\Testes_1\obj\Debug\net5.0\Razor\Pages\Tabela.razor.g.cs
+C:\Users\mcorr\Desktop\Testes\Testes_1\Testes_1\obj\Debug\net5.0\RazorDeclaration\Pages\FichaDoProjeto.razor.g.cs
+C:\Users\mcorr\Desktop\Testes\Testes_1\Testes_1\obj\Debug\net5.0\Razor\Pages\FichaDoProjeto.razor.g.cs
