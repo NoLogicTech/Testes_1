@@ -1,0 +1,60 @@
+﻿@page "/"
+
+@using Testes_1.Services
+@using Testes_1.Services.Controller
+
+@using System.Linq
+@using System.Text.Encodings.Web
+
+@using CNProjetos.Client.Models
+@using System.Text.Json
+
+@inject ClienteService clienteService
+
+@inject HttpClient _http
+
+<h3>SearchBox</h3>
+
+
+@if (clienteLista == null)
+{
+    <p>
+        <em>Carregando...</em>
+    </p>
+}
+else
+{   <input type="text" class="form-control" placeholder="Pesquisar..." @bind-value="pesquisar" @bind-value:event="oninput">
+    
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>NIPC</th>
+            <th>Nome</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var c in clienteLista.Where(c=> c.clienteNome.ToLower().Contains(pesquisar.ToLower())))
+        {
+            <tr>
+                <td>@c.clienteNipc</td>
+                <td>@c.clienteNome</td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}
+
+
+@code
+{
+    public static IList<cliente> clienteLista = new List<cliente>();
+
+    public static string pesquisar = "";
+    
+    protected override async Task OnInitializedAsync()
+    {
+        clienteLista = await clienteService.Get();
+    }
+    
+    
+}

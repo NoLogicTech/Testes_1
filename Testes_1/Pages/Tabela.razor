@@ -1,0 +1,97 @@
+﻿@page "/Tabela"
+
+@using Testes_1.Services
+@using Testes_1.Services.Controller
+
+@using System.Linq
+@using System.Text.Encodings.Web
+
+@using CNProjetos.Client.Models
+@using System.Text.Json
+
+@inject UtilizadorService userService
+
+@inject HttpClient _http
+
+<h3>Tabela</h3>
+
+@if (utilizadorLista == null)
+{
+    <p>
+        <em>Carregando...</em>
+    </p>
+}
+else
+{
+    <button @onclick="() => mostrar()">Adicionar</button>
+    <table class="table">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Nome</th>
+            <th>Iniciais</th>
+            <th>Email</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr class="@editarHidden">
+            <td><input @bind="user.utilizadorId"></td>
+            <td><input @bind="user.utilizadorNome"></td>
+            <td><input @bind="user.utilizadorEmail"></td>
+            <td><input @bind="user.utilizadorIniciais"></td>
+            <td><button @onclick="() => inserirRegisto()">Guardar</button></td>
+        </tr>
+        @foreach (var c in utilizadorLista.OrderByDescending(c => c.utilizadorId))
+        {
+            <tr>
+                <td>@c.utilizadorId</td>
+                <td>@c.utilizadorNome</td>
+                <td>@c.utilizadorIniciais</td>
+                <td>@c.utilizadorEmail</td>
+                <button @onclick="() => apagarRegisto(c.utilizadorId)">Apagar</button>
+            </tr>
+        }
+        </tbody>
+    </table>
+}
+
+
+@code
+{
+    public static int idTeste;
+
+    public static IList<utilizador> utilizadorLista = new List<utilizador>();
+
+    public static List<utilizador> lista;
+
+    public string editarHidden;
+
+    public static utilizador user = new utilizador();
+
+    protected override async Task OnInitializedAsync()
+    {
+        editarHidden = "d-none";
+        utilizadorLista = await userService.Get();
+    }
+
+    public async Task apagarRegisto(int id)
+    {
+        userService.Delete(id);
+        var itemRemove = utilizadorLista.Single(r => r.utilizadorId == id);
+        utilizadorLista.Remove(itemRemove);
+    }
+    
+    public async Task inserirRegisto()
+    {
+        userService.Post(user);
+        utilizadorLista.Add(user);
+        editarHidden = "d-none";
+    }
+
+    
+    public void mostrar()
+    {
+        editarHidden = "";
+    }
+
+}
